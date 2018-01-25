@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import java.io.PrintWriter;
 import java.util.Map;
 
 
@@ -59,8 +61,6 @@ public class AliPayController extends AliPayApiController {
 		log.info("charset>"+charset);
 		return aliPayBean.toString();
 	}
-
-
 	/**
 	 * app支付
 	 */
@@ -105,7 +105,7 @@ public class AliPayController extends AliPayApiController {
 		System.out.println("wap outTradeNo>"+outTradeNo);
 		model.setOutTradeNo(outTradeNo);
 		model.setProductCode("QUICK_WAP_PAY");
-
+		
 		try {
 			AliPayApi.wapPay(response, model, returnUrl, notifyUrl);
 		} catch (Exception e) {
