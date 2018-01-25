@@ -230,11 +230,11 @@ public class AliPayController extends AliPayApiController {
 	@ResponseBody
 	public boolean transfer() {
 		boolean isSuccess = false;
-		String total_amount = "66";
+		String total_amount = "10";
 		AlipayFundTransToaccountTransferModel model = new AlipayFundTransToaccountTransferModel();
 		model.setOutBizNo(StringUtils.getOutTradeNo());
 		model.setPayeeType("ALIPAY_LOGONID");
-		model.setPayeeAccount("abpkvd0206@sandbox.com");
+		model.setPayeeAccount("bwdewq7751@sandbox.com");
 		model.setAmount(total_amount);
 		model.setPayerShowName("测试退款");
 		model.setPayerRealName("沙箱环境");
