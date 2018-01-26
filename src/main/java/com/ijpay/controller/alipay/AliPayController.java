@@ -119,7 +119,7 @@ public class AliPayController extends AliPayApiController {
 	 */
 	@RequestMapping(value = "/pcPay") 
 	@ResponseBody
-	public void pcPay(HttpServletResponse response){
+	public void pcPay(HttpServletResponse response, String out_trade_no){
 		try {
 			String totalAmount = "88.88"; 
 			String outTradeNo =StringUtils.getOutTradeNo();
@@ -129,7 +129,7 @@ public class AliPayController extends AliPayApiController {
 			String notifyUrl = aliPayBean.getDomain() + "/alipay/notify_url";
 			AlipayTradePayModel model = new AlipayTradePayModel();
 			
-			model.setOutTradeNo(outTradeNo);
+			model.setOutTradeNo(StringUtils.isNotBlank(out_trade_no)?out_trade_no:outTradeNo);
 			model.setProductCode("FAST_INSTANT_TRADE_PAY");
 			model.setTotalAmount(totalAmount);
 			model.setSubject("Javen PC支付测试");
@@ -291,12 +291,12 @@ public class AliPayController extends AliPayApiController {
 	 */
 	@RequestMapping(value = "/tradeQuery")
 	@ResponseBody
-	public boolean tradeQuery() {
+	public boolean tradeQuery(String out_trade_no,String trade_no) {
 		boolean isSuccess = false;
 		try {
 			AlipayTradeQueryModel model = new AlipayTradeQueryModel();
-			model.setOutTradeNo("1234567890");
-			model.setTradeNo("2018012521001004200200330247");
+			model.setOutTradeNo(out_trade_no);
+			model.setTradeNo(trade_no);
 
 			isSuccess = AliPayApi.isTradeQuery(model);
 		} catch (AlipayApiException e) {
@@ -349,12 +349,12 @@ public class AliPayController extends AliPayApiController {
 	 */
 	@RequestMapping(value = "/tradeCancel")
 	@ResponseBody
-	public boolean tradeCancel() {
+	public boolean tradeCancel(String out_trade_no,String trade_no) {
 		boolean isSuccess = false;
 		try {
 			AlipayTradeCancelModel model = new AlipayTradeCancelModel();
-			model.setOutTradeNo("1234567890");
-			model.setTradeNo("2018012521001004200200330247");
+			model.setOutTradeNo(out_trade_no);
+			model.setTradeNo(trade_no);
 
 			isSuccess = AliPayApi.isTradeCancel(model);
 		} catch (AlipayApiException e) {
