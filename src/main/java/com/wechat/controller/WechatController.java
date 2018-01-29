@@ -39,10 +39,9 @@ public class WechatController {
 
         this.logger.info("\n接收到来自微信服务器的认证消息：[{}, {}, {}, {}]", signature,
                 timestamp, nonce, echostr);
-
-        if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
+        /*if (StringUtils.isAnyBlank(signature, timestamp, nonce, echostr)) {
             throw new IllegalArgumentException("请求参数非法，请核实!");
-        }
+        }*/
 
         if (this.wxService.checkSignature(timestamp, nonce, signature)) {
             return echostr;

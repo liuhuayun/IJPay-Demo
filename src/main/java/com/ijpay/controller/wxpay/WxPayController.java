@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 import com.ijpay.entity.H5ScencInfo;
 import com.ijpay.entity.H5ScencInfo.H5;
 import com.ijpay.entity.WxPayBean;
+import com.ijpay.utils.HttpUtils;
+import com.ijpay.utils.XMLUtil;
 import com.jpay.ext.kit.HttpKit;
 import com.jpay.ext.kit.IpKit;
 import com.jpay.ext.kit.PaymentKit;
@@ -82,8 +85,17 @@ public class WxPayController extends WxPayApiController {
 	
 	@RequestMapping("/getKey")
 	@ResponseBody
-	public String getKey(){
-		return WxPayApi.getsignkey(wxPayBean.getAppId(), wxPayBean.getPartnerKey());
+	public Object getKey(){
+		Map<String, String> map = new HashMap<String, String>();
+		String nonce_str = String.valueOf(System.currentTimeMillis());
+		map.put("mch_id", wxPayBean.getMchId());
+		map.put("nonce_str", nonce_str);
+		map.put("sign", PaymentKit.createSign(map, wxPayBean.getPartnerKey()));
+		String reqXml = PaymentKit.toXml(map);
+		String respXml = HttpUtils.doPostSSL("https://api.mch.weixin.qq.com/sandboxnew/pay/getsignkey", reqXml);
+		Map<String, Object> resultMap = XMLUtil.getMapObjFromXML(respXml);
+		return resultMap.get("sandbox_signkey");
+		//return WxPayApi.getsignkey(wxPayBean.getMchId(), wxPayBean.getPartnerKey());
 	}
 	@RequestMapping("/ctp")
 	@ResponseBody
@@ -162,7 +174,7 @@ log.info(xmlResult);
 			@RequestParam("total_fee") String total_fee) {
 		// openId，采用 网页授权获取 access_token API：SnsAccessTokenApi获取
 		String openId = (String) request.getSession().getAttribute("openId");
-		
+		openId = StringUtils.isBlank(openId)?"oks65wK-RlELFvUBoT7r53fxMAL4":openId;
 		if (StrKit.isBlank(openId)) {
 			result.addError("openId is null");
 			return result;
