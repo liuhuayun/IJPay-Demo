@@ -60,6 +60,9 @@ public class WxPayController extends WxPayApiController {
 				.setAppId(wxPayBean.getAppId())
 				.setMchId(wxPayBean.getMchId())
 				.setPaternerKey(wxPayBean.getPartnerKey())
+				.setSubAppId(wxPayBean.getAppId())
+				.setSubMchId(wxPayBean.getMchId())
+				.setSubOpenId("oks65wK-RlELFvUBoT7r53fxMAL4")
 				.setPayModel(PayModel.BUSINESSMODEL);
 	}
 
@@ -105,7 +108,7 @@ public class WxPayController extends WxPayApiController {
 	}
 	
 	/**
-	 * 微信H5 支付
+	 * 微信H5 支付(测试通过)
 	 * 注意：必须再web页面中发起支付且域名已添加到开发配置中
 	 */
 	@RequestMapping(value ="/wapPay",method = {RequestMethod.POST,RequestMethod.GET})
@@ -136,7 +139,7 @@ public class WxPayController extends WxPayApiController {
 				.setSceneInfo(h5_info.toString())
 				.build();
 		
-		String xmlResult = WxPayApi.pushOrder(false,params);
+		String xmlResult = WxPayApi.pushOrder(true,params);
 log.info(xmlResult);
 		Map<String, String> result = PaymentKit.xmlToMap(xmlResult);
 		
@@ -166,7 +169,7 @@ log.info(xmlResult);
 	
 	
 	/**
-	 * 公众号支付
+	 * 公众号支付(测试通过)
 	 */
 	@RequestMapping(value ="/webPay",method = {RequestMethod.POST,RequestMethod.GET})
 	@ResponseBody
@@ -200,7 +203,7 @@ log.info(xmlResult);
 				.setOutTradeNo(String.valueOf(System.currentTimeMillis()))
 				.build();
 		
-		String xmlResult = WxPayApi.pushOrder(false,params);
+		String xmlResult = WxPayApi.pushOrder(true,params);
 log.info(xmlResult);
 		Map<String, String> resultMap = PaymentKit.xmlToMap(xmlResult);
 		
@@ -379,7 +382,7 @@ log.info(xmlResult);
 
 		String openId = (String) request.getSession().getAttribute("openId");
 		
-		
+		openId = StringUtils.isBlank(openId)?"oks65wK-RlELFvUBoT7r53fxMAL4":openId;
 		if (StrKit.isBlank(openId)) {
 			result.addError("openId is null");
 			return result;
@@ -405,9 +408,8 @@ log.info(xmlResult);
 				.setOutTradeNo(String.valueOf(System.currentTimeMillis()))
 				.build();
 		
-		String xmlResult = WxPayApi.pushOrder(false,params);
-		
-log.info(xmlResult);
+		String xmlResult = WxPayApi.pushOrder(true,params);
+		log.info(xmlResult);
 		Map<String, String> resultMap = PaymentKit.xmlToMap(xmlResult);
 		
 		String return_code = resultMap.get("return_code");
@@ -478,7 +480,7 @@ log.info(xmlResult);
 				.setOutTradeNo(String.valueOf(System.currentTimeMillis()))
 				.build();
 				
-		String xmlResult =  WxPayApi.micropay(false,params);
+		String xmlResult =  WxPayApi.micropay(true,params);
 		
 		//同步返回结果
 
@@ -543,7 +545,7 @@ log.info(xmlResult);
 				.setOutTradeNo(String.valueOf(System.currentTimeMillis()))
 				.build();
 				
-		String xmlResult =  WxPayApi.pushOrder(false,params);
+		String xmlResult =  WxPayApi.pushOrder(true,params);
 		
 log.info(xmlResult);
 		Map<String, String> resultMap = PaymentKit.xmlToMap(xmlResult);
